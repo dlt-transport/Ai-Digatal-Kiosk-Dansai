@@ -2,8 +2,8 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
-  <title>AI Digital Kiosk - DLT (Local Brain)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AI Digital Kiosk</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;500;800&family=Kanit:wght@300;500;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -74,7 +74,7 @@
       padding-bottom: 10px; 
     }
 
-        /* 🌟 สร้าง "สปริงล่องหน" หนุนกล่องข้อความจากด้านล่างสุด */
+    /* 🌟 สร้าง "สปริงล่องหน" หนุนกล่องข้อความจากด้านล่างสุด */
     .main-container::after {
       content: '';
       display: block;
@@ -392,10 +392,18 @@
         </button>
       </div>
 
-      <div class="idcard-single-section" style="margin-bottom: 12px;">
+      <div class="idcard-single-section" style="margin-bottom: 8px;">
         <button class="btn-idcard-single" onclick="openQueueModal()" style="border-color: #00b894; box-shadow: 0 4px 12px rgba(0, 184, 148, 0.06);">
           <div class="icon-box" style="background: #00b894;"><i class="fas fa-ticket-alt"></i></div>
           <div class="text-box">ระบบบริการสะดวก<br><b style="color: #00b894;">รับบัตรคิวงานตรวจสภาพรถ</b></div>
+        </button>
+      </div>
+
+      <!-- 🟢 ปุ่มเปิดระบบช่วยกรอกแบบฟอร์มคำขออัตโนมัติ -->
+      <div class="idcard-single-section" style="margin-bottom: 12px;">
+        <button class="btn-idcard-single" onclick="openFormServiceModal()" style="border-color: #6c5ce7; box-shadow: 0 4px 12px rgba(108, 92, 231, 0.08);">
+          <div class="icon-box" style="background: #6c5ce7;"><i class="fas fa-file-signature"></i></div>
+          <div class="text-box">ระบบบริการสะดวก<br><b style="color: #6c5ce7;">กรอกแบบฟอร์มคำขออัตโนมัติ</b></div>
         </button>
       </div>
 
@@ -496,7 +504,7 @@
           <button onclick="closeQueueModal()" style="position: absolute; top: 15px; right: 15px; background: #ff7675; color: white; border: none; border-radius: 50%; width: 55px; height: 55px; font-size: 26px; cursor: pointer; z-index: 100000; box-shadow: 0 4px 10px rgba(255, 118, 117, 0.4); display: flex; justify-content: center; align-items: center;">✖</button>
           
           <div style="width: 100%; height: 100%; overflow: hidden; position: relative;">
-              <iframe src="https://script.google.com/macros/s/AKfycbwJfX_zFhONJBfGMM3oltLUVTGj_wr6BjEPlgGAJ9sE1bjVkseiil3gK2ta6HkD_jv7/exec?page=register" 
+              <iframe id="queueIframe" src="https://script.google.com/macros/s/AKfycbwJfX_zFhONJBfGMM3oltLUVTGj_wr6BjEPlgGAJ9sE1bjVkseiil3gK2ta6HkD_jv7/exec?page=register" 
                       style="width: 125%; height: 125%; border: none; display: block; transform: scale(0.8); transform-origin: top left;">
               </iframe>
           </div>
@@ -504,8 +512,46 @@
       </div>
   </div>
 
+  <!-- 🟢 หน้าต่าง Popup สำหรับระบบบริการแบบฟอร์มคำขออัตโนมัติ -->
+  <div id="formServiceModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background-color: rgba(0,0,0,0.85); z-index: 99999; justify-content: center; align-items: center; box-sizing: border-box;">
+      <div style="background-color: #f8fafc; width: 98%; height: 96%; border-radius: 20px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow: hidden;">
+          <button onclick="closeFormServiceModal()" style="position: absolute; top: 15px; right: 15px; background: #ff7675; color: white; border: none; border-radius: 50%; width: 55px; height: 55px; font-size: 26px; cursor: pointer; z-index: 100000; box-shadow: 0 4px 10px rgba(255, 118, 117, 0.4); display: flex; justify-content: center; align-items: center;">✖</button>
+          <div style="width: 100%; height: 100%; overflow: hidden; position: relative;">
+              <iframe id="formServiceIframe" src="https://script.google.com/macros/s/AKfycbzVp7J3B0Pm1hBi8h-fZHX4qMjgUrOac5JmombOwKZ9tJ_GXdmJ1ZvOcp7pN_dnJY90xw/exec?mode=kiosk" 
+                      style="width: 100%; height: 100%; border: none; display: block;">
+              </iframe>
+          </div>
+      </div>
+  </div>
+
+  <!-- 🟢 หน้าต่างพรีวิวเอกสาร PDF สำหรับสั่งพิมพ์ทันทีบนตู้คีออสก์  -->
+  <div id="kioskPdfPreviewModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background-color: rgba(0,0,0,0.9); z-index: 100005; justify-content: center; align-items: center; backdrop-filter: blur(6px); box-sizing: border-box;">
+      <div style="background-color: #1e293b; width: 96%; height: 96%; border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.6);">
+          <div style="background: #0f172a; color: white; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                  <span style="font-size: 22px;">📄</span>
+                  <div>
+                      <div id="kioskPreviewTitle" style="font-weight: bold; font-size: 18px;">ตรวจสอบเอกสารคำขอก่อนสั่งพิมพ์</div>
+                      <div style="font-size: 12px; color: #94a3b8;">ตรวจสอบความถูกต้อง แล้วกดปุ่ม "สั่งพิมพ์เอกสาร"</div>
+                  </div>
+              </div>
+              <div style="display: flex; gap: 12px;">
+                  <button id="btnConfirmKioskPrint" onclick="confirmKioskFormPrint()" style="background: #10b981; color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: bold; font-size: 17px; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+                      <i class="fas fa-print"></i> สั่งพิมพ์เอกสาร
+                  </button>
+                  <button onclick="closeKioskPdfPreview()" style="background: #ef4444; color: white; border: none; padding: 12px 20px; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer;">
+                      ✖ ปิดหน้าต่าง
+                  </button>
+              </div>
+          </div>
+          <div style="flex: 1; width: 100%; background: #334155; position: relative;">
+              <iframe id="kioskPdfPreviewFrame" src="" style="width: 100%; height: 100%; border: none; display: block;"></iframe>
+          </div>
+      </div>
+  </div>
+
   <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
-  <script src="script.js?v=2.2"></script>
+  <script src="script.js?v=2.3"></script>
 
   <script>
     // Service Worker
@@ -591,11 +637,51 @@
         });
         const imgEl = document.getElementById('id-card-render');
         if (imgEl) imgEl.src = '';
-        console.log('🧹 [DOM] ล้างข้อมูลบัตรออกจากหน้าจอแล้ว');
+        window.currentKioskCardData = null; // 🟢 ล้างข้อมูลบัตรในหน่วยความจำทันที
+        notifyFormCardRemoved(); // 🟢 แจ้งหน้าฟอร์มคำขอให้ล้างตัวแปรความจำบัตรทันที
+        console.log('🧹 [DOM] ล้างข้อมูลบัตรออกจากหน่วยความจำแล้ว');
     }
 
     let wsClient = null;
     let wsConnected = false;
+    let idCardAutoClearTimer = null;
+    let idCardCountdownInterval = null;
+    let showSetupOnFail = false;     // 🟢 ตัวแปรควบคุมการแสดง Popup ติดตั้ง
+    let wsReconnectEnabled = true;   // 🟢 เปิดให้ค้นหาหลังบ้านอัตโนมัติตั้งแต่เปิดเครื่อง
+    let wsReconnectTimer = null;     // 🟢 ตัวจับเวลาค้นหาหลังบ้านซ้ำเบื้องหลัง
+
+    function stopIdCardAutoClearTimer() {
+        if (idCardAutoClearTimer) { clearTimeout(idCardAutoClearTimer); idCardAutoClearTimer = null; }
+        if (idCardCountdownInterval) { clearInterval(idCardCountdownInterval); idCardCountdownInterval = null; }
+    }
+
+    function startIdCardAutoClearTimer() {
+        stopIdCardAutoClearTimer();
+        let timeLeft = 15; // ⏳ เวลาให้กดพิมพ์สำเนาบัตร 20 วินาที ถ้าไม่กดจะล็อกปุ่มและลบข้อมูลทิ้งอัตโนมัติ
+        const respEl = document.getElementById('response-text');
+        if (respEl) {
+            respEl.innerText = `✨ โหลดข้อมูลสำเร็จ! กรุณากดปุ่มด้านล่างเพื่อยืนยันการพิมพ์สำเนา`;
+        }
+
+        idCardCountdownInterval = setInterval(() => {
+            timeLeft--;
+            if (timeLeft > 0 && respEl) {
+                respEl.innerText = `✨ โหลดข้อมูลสำเร็จ! กรุณากดปุ่มด้านล่างเพื่อยืนยันการพิมพ์สำเนา`;
+            }
+        }, 1000);
+
+        idCardAutoClearTimer = setTimeout(() => {
+            stopIdCardAutoClearTimer();
+            if (wsClient && wsClient.readyState === WebSocket.OPEN) {
+                wsClient.send(JSON.stringify({ action: 'delete-data' }));
+            }
+            clearIdCardDOM();
+            setPrintBtnReady(false);
+            if (respEl) {
+                respEl.innerText = "🔒 หมดเวลายืนยันการพิมพ์ กรุณาเสียบบัตรใหม่อีกครั้ง";
+            }
+        }, 15000);
+    }
 
     function setPrintBtnReady(ready) {
         const btn = document.querySelector('.btn-idcard-single');
@@ -624,6 +710,10 @@
             wsClient.send(JSON.stringify({ action: 'trigger-read' }));
             return;
         }
+        // 🟢 ป้องกันการเปิดซ้อนขณะกำลังเชื่อมต่อ
+        if (wsClient && wsClient.readyState === WebSocket.CONNECTING) {
+            return;
+        }
         if (wsClient) try { wsClient.close(); } catch(e) {}
 
         wsClient = new WebSocket('ws://localhost:8080');
@@ -631,6 +721,12 @@
         wsClient.onopen = () => {
             console.log('✅ เชื่อมต่อระบบหลังบ้านสำเร็จ');
             wsConnected = true;
+            // 🟢 เมื่อเจอหลังบ้านแล้ว ให้หยุดการวนค้นหาซ้ำ และปิด Popup ติดตั้ง (ถ้าเปิดอยู่)
+            if (wsReconnectTimer) {
+                clearInterval(wsReconnectTimer);
+                wsReconnectTimer = null;
+            }
+            closeSetupModal();
             setPrintBtnReady(false);
             wsClient.send(JSON.stringify({ action: 'trigger-read' }));
             document.getElementById('response-text').innerText = "💳 ระบบพร้อมใช้งาน กรุณาเสียบบัตรประชาชนที่เครื่องอ่าน...";
@@ -639,14 +735,17 @@
         wsClient.onerror = function() {
             wsConnected = false;
             console.error('❌ เชื่อมต่อ backend ไม่ได้');
-            if (onFailCallback) onFailCallback();
+            // 🟢 เช็กว่าเป็นฟังก์ชันก่อนเรียก ป้องกัน Error ตอนเริ่มหน้าเว็บด้วย DOMContentLoaded
+            if (typeof onFailCallback === 'function') onFailCallback();
         };
 
         wsClient.onmessage = async function(event) {
             try {
                 const response = JSON.parse(event.data);
 
-                if (response.status === 'deleted') {
+                // 🟢 เมื่อดึงบัตรออก หรือสั่งลบข้อมูล ให้ล้างข้อมูลบัตรในระบบและล็อกปุ่มทันที
+                if (response.status === 'deleted' || response.status === 'removed' || response.status === 'empty' || response.status === 'no_card') {
+                    stopIdCardAutoClearTimer();
                     clearIdCardDOM();
                     setPrintBtnReady(false);
                     document.getElementById('response-text').innerText = "💳 ระบบพร้อมใช้งาน กรุณาเสียบบัตรประชาชนที่เครื่องอ่าน...";
@@ -654,7 +753,7 @@
                     return;
                 }
 
-                if (response.status === 'success') {
+                if (response.status === 'success' && response.rawData) {
                     const cleanData = response.rawData.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g).map(s => s.replace(/^"|"$/g, '').trim());
                     if (cleanData.length > 0) {
                         const clean = (idx, prefix) => cleanData[idx] ? cleanData[idx].replace(new RegExp(`^${prefix}`, 'gi'), '').trim() : '';
@@ -668,7 +767,24 @@
                         if (document.getElementById('val-issue')) document.getElementById('val-issue').innerText = cleanData[19] || '—';
                         if (document.getElementById('val-expiry')) document.getElementById('val-expiry').innerText = cleanData[20] || '—';
                         if (document.getElementById('val-address')) document.getElementById('val-address').innerText = fullAddress;
-                    }
+
+                        window.currentKioskCardData = {
+                            id: cleanData[2] || '',
+                            fullName: `${cleanData[3] || ''} ${cleanData[4] || ''} ${cleanData[5] || ''}`.trim(),
+                            age: calcAgeFromDob(cleanData[9] || ''),
+                            houseNo: vNo !== '—' ? vNo : '',
+                            moo: vMoo || '',
+                            tambon: vSub || '',
+                            amphoe: vDist || '',
+                            province: vProv || ''
+                        };
+                        // 🟢 ส่งข้อมูลเข้าฟอร์มเฉพาะเมื่อผู้ใช้กดปุ่มดึงข้อมูลเท่านั้น (ไม่กรอกเองตอนเสียบบัตร)
+                        if (window.isFormRequestingCardNow) {
+                            window.isFormRequestingCardNow = false;
+                            sendCardDataToFormIframe();
+                        }
+                    } // 🟢 เติมวงเล็บปีกกาปิดของ if (cleanData.length > 0) ตรงนี้ที่หายไปครับ
+
                     if (response.photoBase64 && document.getElementById('id-card-render')) {
                         try {
                             const enhancedPhoto = await ยกระดับภาพพิมพ์(response.photoBase64, 40, 35);
@@ -677,9 +793,12 @@
                             document.getElementById('id-card-render').src = response.photoBase64.startsWith('data:image') ? response.photoBase64 : `data:image/jpeg;base64,${response.photoBase64}`;
                         }
                     }
-                    document.getElementById('response-text').innerText = "✨ โหลดข้อมูลสำเร็จ! กรุณากดปุ่มด้านล่างเพื่อยืนยันการพิมพ์สำเนา";
                     setPrintBtnReady(true);
+                    // 🟢 เริ่มนับถอยหลัง 20 วินาทีเพื่อล้างข้อมูลอัตโนมัติหากไม่กดพิมพ์
+                    startIdCardAutoClearTimer();
                 } else {
+                    stopIdCardAutoClearTimer();
+                    clearIdCardDOM();
                     setPrintBtnReady(false);
                 }
             } catch (err) { console.error('ประมวลผลข้อมูลล้มเหลว:', err); }
@@ -688,6 +807,14 @@
         wsClient.onclose = () => {
             wsConnected = false;
             console.log('🔴 [WebSocket] Disconnected.');
+            // 🟢 สั่งให้ค้นหาไฟล์หลังบ้านซ้ำเบื้องหลังทุกๆ 2 วินาที จนกว่าจะเจอ
+            if (wsReconnectEnabled && !wsReconnectTimer) {
+                wsReconnectTimer = setInterval(() => {
+                    if (!wsClient || wsClient.readyState === WebSocket.CLOSED) {
+                        connectToKioskBackend();
+                    }
+                }, 2000);
+            }
         };
     }
 
@@ -738,6 +865,7 @@
     }
 
     async function triggerIdCardPrint() {
+        stopIdCardAutoClearTimer(); // 🟢 หยุดเวลานับถอยหลังทันทีที่กดปุ่มพิมพ์
         const printBtn = document.querySelector('.btn-idcard-single');
 
         showSetupOnFail = true;
@@ -832,84 +960,508 @@
     }
 
     // ==========================================
-    // 🎟️ ฟังก์ชันควบคุม Popup ระบบคิวงานตรวจสภาพรถ (ฉบับป้องกันเสียงตีกัน)
+    // 🎟️ ฟังก์ชันควบคุม Popup ระบบคิวงานตรวจสภาพรถ (ฉบับป้องกันเสียงตีกันและป้องกันทักซ้ำ)
     // ==========================================
     function openQueueModal() {
-    const modal = document.getElementById('queueModal');
-    if (modal) {
-        // 🔒 ล็อกสถานะเพื่อป้องกัน AI ทำงานแทรกขณะเปิดหน้าต่าง
+        const modal = document.getElementById('queueModal');
+        if (modal) {
+            isAtHome = false;
+            window.hasGreeted = true;
+            if (typeof personInFrameTime !== 'undefined' && personInFrameTime === null) {
+                personInFrameTime = Date.now();
+            }
+
+            window.isQueueOpen = true;
+
+            if (window.queueAudioDelayTimer) clearTimeout(window.queueAudioDelayTimer);
+            if (typeof stopAllSpeech === 'function') stopAllSpeech();
+            window.speechSynthesis.cancel();
+            if (typeof responsiveVoice !== 'undefined') responsiveVoice.cancel();
+            if (typeof forceStopAllMic === 'function') forceStopAllMic();
+
+            const vipAudio = document.getElementById('vipGreetingSound');
+            if (vipAudio) {
+                vipAudio.pause();
+                vipAudio.currentTime = 0;
+            }
+
+            window.isBusy = true;
+
+            modal.style.display = 'flex';
+            updateInteractionTime();
+            
+            const msg = window.currentLang === 'th' ? "กรุณากดคิวเลือกประเภทงานบริการ หรือสแกนคิวอาโค้ดเพื่อรับแจ้งคิวออนไลน์ได้เลยครับ" : "Please select a service to get your queue ticket.";
+            
+            window.queueAudioDelayTimer = setTimeout(() => {
+                if (!window.isQueueOpen) return;
+                if (window.currentLang === 'th') {
+                    playAudioLink("https://dlt-transport.github.io/sound/กรุณากดคิวเลือกประเภทงานบริการ_หรือสแกนคิวอาร์โค้ดเพื่อรับแจ้งคิวออนไลน์ได้เลยครับ.wav", () => {
+                        window.isBusy = false;
+                    });
+                } else {
+                    if (typeof speak === 'function') {
+                        speak(msg, () => { 
+                            window.isBusy = false;
+                        });
+                    }
+                }
+            }, 120);
+        }
+    }
+
+    function closeQueueModal() {
+        const modal = document.getElementById('queueModal');
+        if (modal) {
+            modal.style.display = 'none';
+            
+            if (window.queueAudioDelayTimer) clearTimeout(window.queueAudioDelayTimer);
+            if (typeof stopAllSpeech === 'function') stopAllSpeech();
+
+            window.isQueueOpen = false;
+            isAtHome = false;
+            window.hasGreeted = true;
+            if (typeof personInFrameTime !== 'undefined' && personInFrameTime === null) {
+                personInFrameTime = Date.now();
+            }
+            
+            window.isBusy = true; 
+
+            updateInteractionTime();
+            
+            const msg = window.currentLang === 'th' ? "มีอะไรให้น้องนำทางช่วยเหลือเพิ่มเติมไหมครับ" : "Is there anything else I can help you with?";
+            displayResponse(msg);
+            
+            window.queueAudioDelayTimer = setTimeout(() => {
+                if (window.isQueueOpen) return;
+                if (window.currentLang === 'th') {
+                    playAudioLink("https://dlt-transport.github.io/sound/มีอะไรให้ช่วยไหมครับ.wav", () => {
+                        window.isBusy = false;
+                        window.allowWakeWord = true;
+                        if (typeof startWakeWord === 'function') startWakeWord();
+                    });
+                } else {
+                    if (typeof speak === 'function') {
+                        speak(msg, () => {
+                            window.isBusy = false;
+                            window.allowWakeWord = true;
+                            if (typeof startWakeWord === 'function') startWakeWord();
+                        });
+                    }
+                }
+            }, 120);
+        }
+    }
+
+    // ==========================================
+    // 📋 ฟังก์ชันควบคุมระบบฟอร์มคำขอ & พรีวิวปริ้นท์ทันที & ลบข้อมูลบัตรหลังบ้านทันทีที่ดึงลงฟอร์มหรือถอดบัตร
+    // ==========================================
+    window.currentKioskCardData = null;
+    window.formIframeSource = null;
+    let currentPreviewPdfBase64 = null;
+    let currentPreviewBlobUrl = null;
+    let popupCountdownSeconds = 0;
+    let isWarningPopupOpen = false;
+
+    function calcAgeFromDob(dobStr) {
+        if (!dobStr || dobStr === '—') return '';
+        const nums = dobStr.match(/\d{4}/g);
+        if (!nums) return '';
+        let year = parseInt(nums[nums.length - 1]);
+        if (dobStr.length === 8 && !dobStr.includes(' ')) {
+            year = parseInt(dobStr.substring(0, 4));
+        }
+        const currentYearBE = new Date().getFullYear() + 543;
+        const currentYearAD = new Date().getFullYear();
+        return year > 2400 ? (currentYearBE - year) : (currentYearAD - year);
+    }
+
+    function sendCardDataToFormIframe() {
+        if (!window.currentKioskCardData) return;
+        const msgData = {
+            type: 'KIOSK_IDCARD_DATA',
+            payload: window.currentKioskCardData
+        };
+        if (window.formIframeSource) {
+            try { window.formIframeSource.postMessage(msgData, '*'); } catch (e) {}
+        }
+        const iframe = document.getElementById('formServiceIframe');
+        if (iframe && iframe.contentWindow) {
+            try { iframe.contentWindow.postMessage(msgData, '*'); } catch (e) {}
+        }
+    }
+
+    function notifyFormCardRemoved() {
+        const msgData = { type: 'KIOSK_IDCARD_REMOVED' };
+        if (window.formIframeSource) {
+            try { window.formIframeSource.postMessage(msgData, '*'); } catch (e) {}
+        }
+        const iframe = document.getElementById('formServiceIframe');
+        if (iframe && iframe.contentWindow) {
+            try { iframe.contentWindow.postMessage(msgData, '*'); } catch (e) {}
+        }
+    }
+    
+    function openFormServiceModal() {
+        const modal = document.getElementById('formServiceModal');
+        if (modal) {
+            isAtHome = false;
+            window.hasGreeted = true;
+            if (typeof personInFrameTime !== 'undefined' && personInFrameTime === null) {
+                personInFrameTime = Date.now();
+            }
+            window.isQueueOpen = true;
+
+            if (window.queueAudioDelayTimer) clearTimeout(window.queueAudioDelayTimer);
+            if (typeof stopAllSpeech === 'function') stopAllSpeech();
+            window.speechSynthesis.cancel();
+            if (typeof responsiveVoice !== 'undefined') responsiveVoice.cancel();
+            if (typeof forceStopAllMic === 'function') forceStopAllMic();
+
+            const vipAudio = document.getElementById('vipGreetingSound');
+            if (vipAudio) {
+                vipAudio.pause();
+                vipAudio.currentTime = 0;
+            }
+
+            // 🟢 ล้างข้อมูลบัตรที่อาจค้างอยู่จากหน้าแรกทิ้งทันทีที่เปิดหน้ากรอกแบบฟอร์ม
+            stopIdCardAutoClearTimer();
+            clearIdCardDOM();
+            setPrintBtnReady(false);
+            if (wsClient && wsClient.readyState === WebSocket.OPEN) {
+                wsClient.send(JSON.stringify({ action: 'delete-data' }));
+            }
+
+            // 🟢 สั่งให้ฟอร์มรีเซ็ตกลับหน้าแรกทุกครั้งที่เปิดเข้ามาใหม่
+            if (window.formIframeSource) {
+                try { window.formIframeSource.postMessage({ type: 'KIOSK_RESET_FORM' }, '*'); } catch (e) {}
+            }
+            const iframe = document.getElementById('formServiceIframe');
+            if (iframe && iframe.contentWindow) {
+                try { iframe.contentWindow.postMessage({ type: 'KIOSK_RESET_FORM' }, '*'); } catch (e) {}
+            }
+
+            modal.style.display = 'flex';
+            updateInteractionTime();
+            if (typeof lastSeenTime !== 'undefined' && lastSeenTime > Date.now()) {
+                lastSeenTime = Date.now();
+            }
+        }
+    }
+
+    function closeFormServiceModal() {
+        const modal = document.getElementById('formServiceModal');
+        if (modal) {
+            modal.style.display = 'none';
+            if (window.queueAudioDelayTimer) clearTimeout(window.queueAudioDelayTimer);
+            if (typeof stopAllSpeech === 'function') stopAllSpeech();
+
+            // 🟢 สั่งรีเซ็ตหน้าฟอร์มกลับหน้าแรก และสั่งลบข้อมูลบัตรใน Backend ทันทีที่ปิดหน้าต่าง
+            if (window.formIframeSource) {
+                try { window.formIframeSource.postMessage({ type: 'KIOSK_RESET_FORM' }, '*'); } catch (e) {}
+            }
+            const iframe = document.getElementById('formServiceIframe');
+            if (iframe && iframe.contentWindow) {
+                try { iframe.contentWindow.postMessage({ type: 'KIOSK_RESET_FORM' }, '*'); } catch (e) {}
+            }
+            if (wsClient && wsClient.readyState === WebSocket.OPEN) {
+                wsClient.send(JSON.stringify({ action: 'delete-data' }));
+            }
+            clearIdCardDOM();
+
+            window.isQueueOpen = false;
+            isAtHome = false;
+            window.hasGreeted = true;
+            if (typeof personInFrameTime !== 'undefined' && personInFrameTime === null) {
+                personInFrameTime = Date.now();
+            }
+            window.isBusy = true;
+            updateInteractionTime();
+
+            const msg = window.currentLang === 'th' ? "มีอะไรให้น้องนำทางช่วยเหลือเพิ่มเติมไหมครับ" : "Is there anything else I can help you with?";
+            displayResponse(msg);
+
+            window.queueAudioDelayTimer = setTimeout(() => {
+                if (window.isQueueOpen) return;
+                if (window.currentLang === 'th') {
+                    playAudioLink("https://dlt-transport.github.io/sound/มีอะไรให้ช่วยไหมครับ.wav", () => {
+                        window.isBusy = false;
+                        window.allowWakeWord = true;
+                        if (typeof startWakeWord === 'function') startWakeWord();
+                    });
+                } else {
+                    if (typeof speak === 'function') {
+                        speak(msg, () => {
+                            window.isBusy = false;
+                            window.allowWakeWord = true;
+                            if (typeof startWakeWord === 'function') startWakeWord();
+                        });
+                    }
+                }
+            }, 120);
+        }
+    }
+
+    function openKioskPdfPreview(pdfBase64, titleText) {
+        currentPreviewPdfBase64 = pdfBase64;
+        if (currentPreviewBlobUrl) {
+            URL.revokeObjectURL(currentPreviewBlobUrl);
+            currentPreviewBlobUrl = null;
+        }
+
+        const cleanBase64 = pdfBase64.replace(/^data:application\/pdf;base64,/, '');
+        const byteCharacters = atob(cleanBase64);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const blob = new Blob([new Uint8Array(byteNumbers)], { type: 'application/pdf' });
+        currentPreviewBlobUrl = URL.createObjectURL(blob);
+
+        const titleEl = document.getElementById('kioskPreviewTitle');
+        if (titleEl && titleText) titleEl.innerText = `พรีวิว: ${titleText}`;
+
+        const frame = document.getElementById('kioskPdfPreviewFrame');
+        if (frame) frame.src = `${currentPreviewBlobUrl}#toolbar=0&navpanes=0&view=FitH`;
+
+        const previewModal = document.getElementById('kioskPdfPreviewModal');
+        if (previewModal) previewModal.style.display = 'flex';
+    }
+
+    function closeKioskPdfPreview() {
+        const previewModal = document.getElementById('kioskPdfPreviewModal');
+        if (previewModal) previewModal.style.display = 'none';
+
+        const frame = document.getElementById('kioskPdfPreviewFrame');
+        if (frame) frame.src = '';
+
+        if (currentPreviewBlobUrl) {
+            URL.revokeObjectURL(currentPreviewBlobUrl);
+            currentPreviewBlobUrl = null;
+        }
+        currentPreviewPdfBase64 = null;
+    }
+
+    async function confirmKioskFormPrint() {
+        if (!currentPreviewPdfBase64) return;
+        const btn = document.getElementById('btnConfirmKioskPrint');
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> กำลังส่งไปเครื่องพิมพ์...';
+        }
+
+        try {
+            const formattedBase64 = currentPreviewPdfBase64.startsWith('data:')
+                ? currentPreviewPdfBase64
+                : `data:application/pdf;base64,${currentPreviewPdfBase64}`;
+
+            await fetch('http://localhost:8080/print', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    type: 'copy',
+                    duplex: true,
+                    pdfBase64: formattedBase64
+                })
+            });
+
+            if (wsClient && wsClient.readyState === WebSocket.OPEN) {
+                wsClient.send(JSON.stringify({ action: 'delete-data' }));
+            }
+            clearIdCardDOM();
+            closeKioskPdfPreview();
+            closeFormServiceModal();
+            document.getElementById('response-text').innerText = "🎉 สั่งพิมพ์เอกสารคำขอเรียบร้อยแล้วครับ";
+        } catch (err) {
+            console.error('ส่งพิมพ์ผ่าน Backend ไม่สำเร็จ เปิดหน้าต่างพิมพ์ของเบราว์เซอร์แทน:', err);
+            const frame = document.getElementById('kioskPdfPreviewFrame');
+            if (frame && frame.contentWindow) {
+                try { frame.contentWindow.print(); } catch (e) {}
+            }
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-print"></i> สั่งพิมพ์เอกสารทันที';
+            }
+        }
+    }
+
+    window.addEventListener('message', async (event) => {
+        if (!event.data) return;
+
+        // 🟢 รีเซ็ตเวลานับถอยหลังทุกครั้งที่มีการแตะหน้าจอหรือพิมพ์ในฟอร์ม
+        if (event.data.type === 'KIOSK_USER_ACTIVITY') {
+            popupCountdownSeconds = 0;
+            isWarningPopupOpen = false;
+            window.isQueueOpen = true;
+            if (typeof personInFrameTime !== 'undefined' && personInFrameTime === null) {
+                personInFrameTime = Date.now();
+            }
+            if (typeof updateInteractionTime === 'function') updateInteractionTime();
+            if (typeof lastSeenTime !== 'undefined' && lastSeenTime > Date.now()) {
+                lastSeenTime = Date.now();
+            }
+            const warnBox = document.getElementById('kioskIdleWarnModal');
+            if (warnBox) warnBox.style.display = 'none';
+        }
+
+        if (event.data.type === 'REGISTER_FORM_IFRAME') {
+            window.formIframeSource = event.source;
+        }
+
+        // 🟢 เมื่อผู้ใช้กดปุ่มสีเขียวดึงข้อมูลในฟอร์ม (เจ้าของประกอบการ หรือ ผู้รับมอบอำนาจ)
+        if (event.data.type === 'REQUEST_KIOSK_IDCARD') {
+            window.formIframeSource = event.source;
+            if (window.currentKioskCardData) {
+                // ถ้าเสียบบัตรรอไว้อยู่แล้ว ส่งข้อมูลไปเติมตามปุ่มที่กดทันที
+                sendCardDataToFormIframe();
+            } else {
+                // ถ้ายังไม่มีข้อมูล ให้สั่งเครื่องอ่านบัตรอ่านเฉพาะจังหวะที่กดปุ่มนี้ (เปิดรับแค่ 3 วินาที)
+                window.isFormRequestingCardNow = true;
+                setTimeout(() => { window.isFormRequestingCardNow = false; }, 3000);
+                if (wsClient && wsClient.readyState === WebSocket.OPEN) {
+                    wsClient.send(JSON.stringify({ action: 'trigger-read' }));
+                } else {
+                    connectToKioskBackend();
+                }
+            }
+        }
+
+        // 🟢 ทันทีที่ฟอร์มดึงข้อมูลบัตรลงช่องกรอกเสร็จ สั่งลบข้อมูลบัตรหลังบ้าน (delete-data) และล็อกปุ่มหน้าแรกทันที
+        if (event.data.type === 'KIOSK_CARD_CONSUMED') {
+            stopIdCardAutoClearTimer();
+            if (wsClient && wsClient.readyState === WebSocket.OPEN) {
+                wsClient.send(JSON.stringify({ action: 'delete-data' }));
+            }
+            clearIdCardDOM();
+            setPrintBtnReady(false);
+        }
+
+        if (event.data.type === 'PREVIEW_FORM_PDF' && event.data.pdfBase64) {
+            openKioskPdfPreview(event.data.pdfBase64, event.data.title || 'เอกสารคำขอ');
+        }
+    });
+
+    // 🛑 ดักจับจังหวะที่ผู้ใช้แตะใน <iframe> เพื่อหยุดเสียงคำแนะนำทันที (ไม่ดึง focus กลับเพื่อป้องกันแป้นพิมพ์เด้งหาย)
+    window.addEventListener('blur', () => {
+        if (window.isQueueOpen) {
+            if (window.queueAudioDelayTimer) clearTimeout(window.queueAudioDelayTimer);
+            if (typeof stopAllSpeech === 'function') stopAllSpeech();
+            updateInteractionTime();
+            if (typeof lastSeenTime !== 'undefined' && lastSeenTime > Date.now()) {
+                lastSeenTime = Date.now();
+            }
+        }
+    });
+
+    // ==========================================
+    // 🏠 ระบบตรวจสอบคนเดินออกจากตู้ (ครบ 30 วินาทีจริงเด้ง Popup ทันที + นับถอยหลัง 30 วินาทีก่อนล้างฟอร์ม)
+    // ==========================================
+    setInterval(() => {
+        const formModal = document.getElementById('formServiceModal');
+        const previewModal = document.getElementById('kioskPdfPreviewModal');
+        const isFormShowing = formModal && formModal.style.display === 'flex';
+        const isPreviewShowing = previewModal && previewModal.style.display === 'flex';
+
+        if (!isFormShowing && !isPreviewShowing) {
+            popupCountdownSeconds = 0;
+            isWarningPopupOpen = false;
+            return;
+        }
+
+        // 🟢 ป้องกันไม่ให้ updateInteractionTime() ใน script.js บวกเวลาล่วงหน้าเกินเวลาปัจจุบัน
+        if (typeof lastSeenTime !== 'undefined' && lastSeenTime > Date.now()) {
+            lastSeenTime = Date.now();
+        }
+
+        // 🟢 ช่วง 30 วินาทีแรก: ถ้ากล้องยังเห็นหน้าคน หรือเพิ่งแตะจอไม่เกิน 30 วินาทีจริง
+        const isWithin30Sec = (personInFrameTime !== null && (Date.now() - lastSeenTime <= 30000));
+        
+        if (isWithin30Sec) {
+            popupCountdownSeconds = 0;
+            window.isQueueOpen = true;
+            if (isWarningPopupOpen) {
+                isWarningPopupOpen = false;
+                const warnBox = document.getElementById('kioskIdleWarnModal');
+                if (warnBox) warnBox.style.display = 'none';
+            }
+            return;
+        }
+
+        // ล็อกไว้ไม่ให้ script.js ตัดกลับหน้าโฮมเองระหว่างที่กำลังนับถอยหลังบน Popup
         window.isQueueOpen = true;
-        window.isBusy = true; 
 
-        // 🛑 เคลียร์เสียงพูดและไมค์ทั้งหมดทันที
-        window.speechSynthesis.cancel();
-        if (typeof responsiveVoice !== 'undefined') responsiveVoice.cancel();
-        if (typeof forceStopAllMic === 'function') forceStopAllMic();
-
-        // ปิดเสียง MP3 VIP (ถ้ามี)
-        const vipAudio = document.getElementById('vipGreetingSound');
-        if (vipAudio) {
-            vipAudio.pause();
-            vipAudio.currentTime = 0;
-        }
-
-        modal.style.display = 'flex';
-        updateInteractionTime();
-        
-        const msg = window.currentLang === 'th' ? "กรุณากดคิวเลือกประเภทงานบริการ หรือสแกนคิวอาโค้ดเพื่อรับแจ้งคิวออนไลน์ได้เลยครับ" : "Please select a service to get your queue ticket.";
-        
-        // 🟢 สั่งพูดและจัดการสถานะ Busy ให้จบลงหลังจากพูดจบเท่านั้น (อัปเกรดใช้ .wav)
-        if (window.currentLang === 'th') {
-            playAudioLink("https://dlt-transport.github.io/sound/กรุณากดคิวเลือกประเภทงานบริการ_หรือสแกนคิวอาร์โค้ดเพื่อรับแจ้งคิวออนไลน์ได้เลยครับ.wav", () => {
-                window.isBusy = false; // ปลดล็อกให้ผู้ใช้แตะปุ่มเลือกคิวได้
-            });
-        } else {
-            if (typeof speak === 'function') {
-                speak(msg, () => { 
-                    window.isBusy = false; // ปลดล็อกให้ผู้ใช้แตะปุ่มเลือกคิวได้
-                });
+        // ⏳ ทันทีที่ครบ 30 วินาทีแรก -> เด้ง Popup ถามทันที
+        if (!isWarningPopupOpen) {
+            isWarningPopupOpen = true;
+            popupCountdownSeconds = 0;
+            let warnBox = document.getElementById('kioskIdleWarnModal');
+            if (!warnBox) {
+                warnBox = document.createElement('div');
+                warnBox.id = 'kioskIdleWarnModal';
+                warnBox.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100dvh;background:rgba(0,0,0,0.8);z-index:200000;display:flex;justify-content:center;align-items:center;font-family:Sarabun,sans-serif;';
+                warnBox.innerHTML = `
+                    <div style="background:white;padding:30px;border-radius:24px;text-align:center;max-width:450px;width:90%;box-shadow:0 15px 40px rgba(0,0,0,0.5);">
+                        <div style="font-size:48px;margin-bottom:10px;">⏳</div>
+                        <h3 style="font-size:24px;font-weight:800;color:#2d3436;margin:0 0 10px 0;">ท่านยังใช้งานอยู่หรือไม่?</h3>
+                        <p style="font-size:18px;color:#636e72;margin-bottom:24px;">ระบบจะกลับสู่หน้าหลักใน <b id="kioskIdleCountdown" style="color:#e74c3c;font-size:22px;">30</b> วินาที</p>
+                        <button id="btnKeepFormAlive" style="width:100%;padding:16px;background:#00b894;color:white;border:none;border-radius:14px;font-size:20px;font-weight:bold;cursor:pointer;">
+                            👆 ยังใช้งานอยู่ (กรอกข้อมูลต่อ)
+                        </button>
+                    </div>`;
+                document.body.appendChild(warnBox);
+                document.getElementById('btnKeepFormAlive').onclick = () => {
+                    popupCountdownSeconds = 0;
+                    isWarningPopupOpen = false;
+                    warnBox.style.display = 'none';
+                    window.isQueueOpen = true;
+                    if (typeof personInFrameTime !== 'undefined') personInFrameTime = Date.now();
+                    if (typeof updateInteractionTime === 'function') updateInteractionTime();
+                    if (typeof lastSeenTime !== 'undefined' && lastSeenTime > Date.now()) {
+                        lastSeenTime = Date.now();
+                    }
+                };
             }
+            document.getElementById('kioskIdleCountdown').innerText = '30';
+            warnBox.style.display = 'flex';
+            return;
         }
-    }
-}
 
-function closeQueueModal() {
-    const modal = document.getElementById('queueModal');
-    if (modal) {
-        modal.style.display = 'none';
-        
-        // 🔓 ปลดล็อกสถานะการเปิดหน้าต่าง
-        window.isQueueOpen = false;
-        
-        // ⚠️ ล็อก Busy ไว้ก่อนเพื่อเล่นเสียงบอกลา
-        window.isBusy = true; 
+        // 🟢 นับถอยหลังบน Popup 30 วินาที (จาก 30 ลงมาถึง 0)
+        popupCountdownSeconds++;
+        const remaining = 30 - popupCountdownSeconds;
+        const countEl = document.getElementById('kioskIdleCountdown');
+        if (countEl) countEl.innerText = Math.max(0, remaining);
 
-        updateInteractionTime();
-        
-        const msg = window.currentLang === 'th' ? "มีอะไรให้น้องนำทางช่วยเหลือเพิ่มเติมไหมครับ" : "Is there anything else I can help you with?";
-        
-        // 🟢 เล่นไฟล์เสียงแทน TTS เมื่อปิดหน้าคิว (อัปเกรดใช้ .wav)
-        if (window.currentLang === 'th') {
-            playAudioLink("https://dlt-transport.github.io/sound/มีอะไรให้ช่วยไหมครับ.wav", () => {
-                // หลังจากบอกลาจบ ค่อยปลดล็อกทุกอย่างและเริ่ม WakeWord ใหม่
-                window.isBusy = false;
-                window.allowWakeWord = true;
-                if (typeof startWakeWord === 'function') startWakeWord();
-            });
-        } else {
-            if (typeof speak === 'function') {
-                speak(msg, () => {
-                    // หลังจากบอกลาจบ ค่อยปลดล็อกทุกอย่างและเริ่ม WakeWord ใหม่
-                    window.isBusy = false;
-                    window.allowWakeWord = true;
-                    if (typeof startWakeWord === 'function') startWakeWord();
-                });
+        // 🚶 เมื่อนับถอยหลังครบ 30 วินาทีแล้วยังไม่มีคนกดปุ่ม -> ล้างข้อมูลและกลับหน้าโฮมทันที
+        if (popupCountdownSeconds >= 30) {
+            popupCountdownSeconds = 0;
+            isWarningPopupOpen = false;
+            window.isQueueOpen = false;
+
+            const warnBox = document.getElementById('kioskIdleWarnModal');
+            if (warnBox) warnBox.style.display = 'none';
+
+            if (previewModal) previewModal.style.display = 'none';
+            if (typeof closeKioskPdfPreview === 'function') closeKioskPdfPreview();
+            if (formModal) formModal.style.display = 'none';
+
+            if (window.formIframeSource) {
+                try { window.formIframeSource.postMessage({ type: 'KIOSK_RESET_FORM' }, '*'); } catch (e) {}
             }
-        }
-    }
-}
+            const iframe = document.getElementById('formServiceIframe');
+            if (iframe && iframe.contentWindow) {
+                try { iframe.contentWindow.postMessage({ type: 'KIOSK_RESET_FORM' }, '*'); } catch (e) {}
+            }
 
-    window.addEventListener('DOMContentLoaded', connectToKioskBackend);
+            if (wsClient && wsClient.readyState === WebSocket.OPEN) {
+                wsClient.send(JSON.stringify({ action: 'delete-data' }));
+            }
+            if (typeof clearIdCardDOM === 'function') clearIdCardDOM();
+            if (typeof resetToHome === 'function') resetToHome();
+        }
+    }, 1000);
+
+    window.addEventListener('DOMContentLoaded', () => connectToKioskBackend());
   </script>
 
   <!-- =================================================================== -->
@@ -928,7 +1480,7 @@ function closeQueueModal() {
     <source src="https://dlt-transport.github.io/sound/nongnamtang.mp3" type="audio/mpeg">
   </audio>
 
-    <script>
+  <script>
     let inspectorMatcher = null; 
     let hasGreetedVIPOnce = false; // 🔒 ตัวแปรล็อกถาวร (ทักครั้งเดียวจบ)
 
@@ -1003,7 +1555,7 @@ function closeQueueModal() {
     }
 
     // ฟังก์ชันเปิดเรดาร์สแกนสดจากกล้อง (เวอร์ชันแซงคิวล็อกเดิมเฉพาะ VIP + ทักครั้งเดียวจบ)
-        function startInspectorScanner() {
+    function startInspectorScanner() {
         const videoEl = document.getElementById('video');
         const lottiePlayer = document.getElementById('lottie-canvas');
         
@@ -1012,8 +1564,8 @@ function closeQueueModal() {
             if (!inspectorMatcher || window.isBusy || !videoEl || videoEl.paused || hasGreetedVIPOnce || window.isQueueOpen) return;
 
             const detection = await faceapi.detectSingleFace(videoEl, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.55 }))
-                                              .withFaceLandmarks()
-                                              .withFaceDescriptor();
+                                             .withFaceLandmarks()
+                                             .withFaceDescriptor();
             
             if (detection) {
                 const match = inspectorMatcher.findBestMatch(detection.descriptor);
